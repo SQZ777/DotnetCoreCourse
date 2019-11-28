@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Course.WebApi.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Course.WebApi
 {
@@ -26,6 +21,12 @@ namespace Course.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            // 加入WeatherDbContext
+            services.AddDbContext<WeatherDbContext>(options =>
+            {
+                // 透過Configuration.GetConnectionString方法取得連線字串
+                options.UseMySql(Configuration.GetConnectionString("weatherDB"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
