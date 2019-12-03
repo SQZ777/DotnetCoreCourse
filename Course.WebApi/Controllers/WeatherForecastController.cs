@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Course.WebApi.Interfaces;
+using Course.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Course.WebApi.Repositories;
 
 namespace Course.WebApi.Controllers
 {
@@ -11,29 +12,34 @@ namespace Course.WebApi.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
+        private readonly IWeatherForecastService _weatherForecastService;
+        public WeatherForecastController(IWeatherForecastService weatherForecastService)
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
-            _logger = logger;
+            _weatherForecastService = weatherForecastService;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return _weatherForecastService.Read();
+        }
+
+        [HttpPost]
+        public IEnumerable<WeatherForecast> Post([FromBody]WeatherForecast weatherForecast)
+        {
+            return _weatherForecastService.Create(weatherForecast);
+        }
+
+        [HttpPut("{id}")]
+        public IEnumerable<WeatherForecast> Put([FromBody]WeatherForecast weatherForecast, [FromRoute]int id)
+        {
+            return _weatherForecastService.Update(weatherForecast, id);
+        }
+
+        [HttpDelete("{id}")]
+        public IEnumerable<WeatherForecast> Delete(int id)
+        {
+            return _weatherForecastService.Delete(id);
         }
     }
 }
