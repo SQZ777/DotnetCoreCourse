@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Course.WebApi.Interfaces;
 using Course.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,57 +12,34 @@ namespace Course.WebApi.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private readonly WeatherDbContext _context;
-
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, WeatherDbContext context)
+        private readonly IWeatherForecastService _weatherForecastService;
+        public WeatherForecastController(IWeatherForecastService weatherForecastService)
         {
-            _logger = logger;
-            _context = context;
+            _weatherForecastService = weatherForecastService;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            return _context.WeatherForecasts.ToArray();
+            return _weatherForecastService.Read();
         }
 
         [HttpPost]
         public IEnumerable<WeatherForecast> Post([FromBody]WeatherForecast weatherForecast)
         {
-            _context.WeatherForecasts.Add(weatherForecast);
-            _context.SaveChanges();
-            return _context.WeatherForecasts.ToArray();
+            return _weatherForecastService.Create(weatherForecast);
         }
 
         [HttpPut("{id}")]
         public IEnumerable<WeatherForecast> Put([FromBody]WeatherForecast weatherForecast, [FromRoute]int id)
         {
-            var item = _context.WeatherForecasts.SingleOrDefault(x => x.Id == id);
-            if (item != null)
-            {
-                _logger.LogDebug("資料存在");
-                item.Summary = weatherForecast.Summary;
-                item.TemperatureC = weatherForecast.TemperatureC;
-                item.Date = weatherForecast.Date;
-                _context.SaveChanges();
-            } else{
-                 _logger.LogDebug("資料不存在");
-            }
-            return _context.WeatherForecasts.ToArray();
+            return _weatherForecastService.Update(weatherForecast, id);
         }
 
         [HttpDelete("{id}")]
         public IEnumerable<WeatherForecast> Delete(int id)
         {
-            var item = _context.WeatherForecasts.SingleOrDefault(x => x.Id == id);
-            if (item != null)
-            {
-                _context.WeatherForecasts.Remove(item);
-                _context.SaveChanges();
-            }
-            return _context.WeatherForecasts.ToArray();
+            return _weatherForecastService.Delete(id);
         }
     }
 }

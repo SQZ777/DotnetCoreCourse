@@ -1,9 +1,11 @@
+using Course.WebApi.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Course.WebApi.Repositories;
+using Course.WebApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Course.WebApi
@@ -20,7 +22,7 @@ namespace Course.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
+            services.AddMvc()
                     .AddNewtonsoftJson();
             // 加入WeatherDbContext
             services.AddDbContext<WeatherDbContext>(options =>
@@ -28,6 +30,8 @@ namespace Course.WebApi
                 // 透過Configuration.GetConnectionString方法取得連線字串
                 options.UseMySql(Configuration.GetConnectionString("weatherDB"));
             });
+
+            services.AddScoped<IWeatherForecastService, WeatherForecastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +42,7 @@ namespace Course.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
             app.UseRouting();
