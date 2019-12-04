@@ -34,5 +34,5 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 
-
-wwwroot
+#wwwroot
+*wwwroot/
