@@ -12,34 +12,34 @@ namespace Course.WebApi.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private readonly IWeatherForecastService _weatherForecastService;
-        public WeatherForecastController(IWeatherForecastService weatherForecastService)
+        private readonly IWeatherForecastRepository _weatherForecastRepository;
+        public WeatherForecastController(IWeatherForecastRepository weatherForecastRepository)
         {
-            _weatherForecastService = weatherForecastService;
+            _weatherForecastRepository = weatherForecastRepository;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            return _weatherForecastService.Read();
+            return _weatherForecastRepository.Read();
         }
 
         [HttpPost]
         public IEnumerable<WeatherForecast> Post([FromBody]WeatherForecast weatherForecast)
         {
-            return _weatherForecastService.Create(weatherForecast);
+            return _weatherForecastRepository.Create(weatherForecast);
         }
 
         [HttpPut("{id}")]
         public IEnumerable<WeatherForecast> Put([FromBody]WeatherForecast weatherForecast, [FromRoute]int id)
         {
-            return _weatherForecastService.Update(weatherForecast, id);
+            return _weatherForecastRepository.Update(weatherForecast, id);
         }
 
         [HttpDelete("{id}")]
         public IEnumerable<WeatherForecast> Delete(int id)
         {
-            return _weatherForecastService.Delete(id);
+            return _weatherForecastRepository.Delete(id);
         }
     }
 }

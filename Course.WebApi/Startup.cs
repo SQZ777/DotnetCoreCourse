@@ -31,7 +31,7 @@ namespace Course.WebApi
                 options.UseMySql(Configuration.GetConnectionString("weatherDB"));
             });
 
-            services.AddScoped<IWeatherForecastService, WeatherForecastService>();
+            services.AddScoped<IWeatherForecastRepository, WeatherForecastRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
