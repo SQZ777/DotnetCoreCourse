@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Course.WebApi.Repositories;
-using Course.WebApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Course.WebApi
